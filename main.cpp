@@ -89,38 +89,49 @@ int main(){
     std::cout << "ERROR::SHADER::LINKING::LINK_FAILED\n" << infoLog << std::endl;
   }
 
-  float vertices[] = {
+  float firstTriVertices[] = {
     0.5f, 0.75f, 0.0f,  // right top point
     0.5f, -0.75f, 0.0f, // right bottom point
     0.0f, -0.75f, 0.0f,  // shared mid point
-
+  };
+  float secondTriVertices[] = {
     0.0f, -0.75f, 0.0f,  // shared mid point
     -0.5f, -0.75f, 0.0f, // left bottom point
     -0.5f, 0.75f, 0.0f,  // left top point
   };
-  unsigned int indices[] = { // start from 0
-    0, 1, 2, // first triangle
-    2, 3, 4 // second triangle
-  };
+  //unsigned int indices[] = { // start from 0
+  //  0, 1, 2, // first triangle
+  //  2, 3, 4 // second triangle
+  //};
 
-  unsigned int VAO;
-  glGenVertexArrays(1, &VAO);
-  glBindVertexArray(VAO);
+  unsigned int VAO1;
+  glGenVertexArrays(1, &VAO1);
+  glBindVertexArray(VAO1);
 
-  unsigned int VBO;
-  glGenBuffers(1, &VBO);
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+  unsigned int VBO1;
+  glGenBuffers(1, &VBO1);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO1);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(firstTriVertices), firstTriVertices, GL_STATIC_DRAW);
   //unsigned int EBO;
   //glGenBuffers(1, &EBO);
   //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
   //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+
+  unsigned int VAO2;
+  glGenVertexArrays(1, &VAO2);
+  glBindVertexArray(VAO2);
+
+  unsigned int VBO2;
+  glGenBuffers(1, &VBO2);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(secondTriVertices), secondTriVertices, GL_STATIC_DRAW);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
 
   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -133,7 +144,13 @@ int main(){
 
     // Draw the shape
     glUseProgram(shaderProgram);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(VAO1);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glBindVertexArray(0);
+
+    glBindVertexArray(VAO2);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     // check and call events and swap the buffers
     glfwSwapBuffers(window);
@@ -141,8 +158,8 @@ int main(){
   }
 
   // Deallocate used resources
-  glDeleteVertexArrays(1, &VAO);
-  glDeleteBuffers(1, &VBO);
+  //glDeleteVertexArrays(1, &VAO);
+  //glDeleteBuffers(1, &VBO);
   //glDeleteBuffers(1, &EBO);
   glDeleteProgram(shaderProgram);
 

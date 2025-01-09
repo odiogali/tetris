@@ -90,14 +90,15 @@ int main(){
   }
 
   float vertices[] = {
-    0.5f,  0.5f, 0.0f,  // top right
-    0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left 
+    0.0f,  0.0f, 0.0f,  // shared mid point
+    0.5f, 0.75f, 0.0f,  // right top point
+    0.5f, 0.0f, 0.0f, // right bottom point
+    -0.5f, 0.75f, 0.0f,  // left top point
+    -0.5f, 0.0f, 0.0f, // left bottom point
   };
   unsigned int indices[] = { // start from 0
-    0, 1, 3, // first triangle
-    1, 2, 3 // second triangle
+    0, 2, 1, // first triangle
+    0, 3, 5 // second triangle
   };
 
   unsigned int VAO;
@@ -119,6 +120,8 @@ int main(){
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
   while(!glfwWindowShouldClose(window)){
     processInput(window);    
 
@@ -128,7 +131,7 @@ int main(){
 
     // Draw the shape
     glUseProgram(shaderProgram);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     // check and call events and swap the buffers
     glfwSwapBuffers(window);

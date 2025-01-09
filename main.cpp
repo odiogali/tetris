@@ -15,7 +15,13 @@ const char* vertexShaderSource = "#version 330 core\n"
 const char* fragmentShaderSource = "#version 330 core\n"
   "out vec4 FragColor;\n"
   "void main(){\n"
-  " FragColor = vec4(1.0f, 0.5f, 0.2f, 0.5f);\n"
+  " FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+  "}\0";
+
+const char* secondFragmentShaderSource = "#version 330 core\n"
+  "out vec4 FragColor;\n"
+  "void main(){\n"
+  " FragColor = vec4(0.972f, 0.784f, 0.024f, 1.0f);\n"
   "}\0";
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
@@ -89,6 +95,17 @@ int main(){
     std::cout << "ERROR::SHADER::LINKING::LINK_FAILED\n" << infoLog << std::endl;
   }
 
+  // Second shader program
+  // Rebuild and recompile second fragment shader
+  unsigned int secondFragmentShader;
+  secondFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(secondFragmentShader, 1, &secondFragmentShaderSource, NULL);
+  glCompileShader(secondFragmentShader);
+  unsigned int secondShaderProgram = glCreateProgram();
+  glAttachShader(secondShaderProgram, vertexShader);
+  glAttachShader(secondShaderProgram, secondFragmentShader);
+  glLinkProgram(secondShaderProgram);
+
   float firstTriVertices[] = {
     0.5f, 0.75f, 0.0f,  // right top point
     0.5f, -0.75f, 0.0f, // right bottom point
@@ -149,6 +166,7 @@ int main(){
 
     glBindVertexArray(0);
 
+    glUseProgram(secondShaderProgram);
     glBindVertexArray(VAO2);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 

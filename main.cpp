@@ -8,18 +8,19 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
 const char* vertexShaderSource = "#version 330 core\n"
-  "layout (location = 0) in vec3 aPos;\n"
-  "out vec4 vertexColor;\n"
+  "layout (location = 0) in vec3 aPos;\n" // position variable has attribute pos 0
+  "layout (location = 1) in vec3 aColor;\n" // color variable has attribute pos 1
+  "out vec3 ourColor;\n" // output a color to the fragment shader
   "void main(){\n"
   " gl_Position = vec4(aPos, 1.0);\n"
-  " vertexColor = vec4(0.5, 0.0, 0.0, 1.0);\n"
+  " ourColor = aColor;\n"
   "}\0";
 
 const char* fragmentShaderSource = "#version 330 core\n"
   "out vec4 FragColor;\n"
-  "uniform vec4 ourColor;\n"
+  "in vec3 ourColor;\n"
   "void main(){\n"
-  " FragColor = ourColor;\n"
+  " FragColor = vec4(ourColor, 1.0);\n"
   "}\0";
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
@@ -55,9 +56,10 @@ int main(){
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
   float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.0f, 0.5f, 0.0f,
+    // vertices         // Colors
+    -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+    0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
+    0.0f, 0.5f, 0.0f,   0.0f, 0.0f, 1.0f,
   };
 
   // build and compile vertex shader
@@ -104,7 +106,6 @@ int main(){
 
   unsigned int VBO;
   glGenBuffers(1, &VBO); // generate a single vertex buffer object and store the object ID in VBO
-
   unsigned int VAO;
   glGenVertexArrays(1, &VAO);
   glBindVertexArray(VAO);
@@ -122,8 +123,10 @@ int main(){
   // but we could've also just used 0 since the vertices are tightly packed
   // Param 6: the offset of where the position data begins in the buffer - since pos data is at the start of the data
   // array, this value is just 0. The type of this parameter is void*
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
   glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) (3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
 
   // Unbind registered VBO
   glBindBuffer(GL_ARRAY_BUFFER, 0);

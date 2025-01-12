@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <math.h>
 #include "Shader.h"
+#include <string>
 
 #include <iostream>
 
@@ -87,6 +88,7 @@ int main(){
     glClear(GL_COLOR_BUFFER_BIT);
 
     shader.use();
+    shader.setFloat("offset", 0.9f);
 
     float timeValue = glfwGetTime();
     float greenValue = (sin(timeValue) / 2.0f) + 0.5f;

@@ -6,6 +6,6 @@ uniform float offset;
 out vec3 ourColor; // output a color to the fragment shader
 
 void main() {
-    gl_Position = vec4(aPos.x + offset, aPos.y, aPos.z, 1.0);
-    ourColor = aColor;
+    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    ourColor = aPos;
 }
